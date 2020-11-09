@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <title>List of users</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="icon" href="https://www.flaticon.com/premium-icon/icons/svg/562/562678.svg">
+
+</head>
+<body>
+<div th:insert="blocks/header :: header"/>
+<div class="container border border-warning m-2 text-center" th:each="user : ${users}">
+    <p>Name :</p>
+    <h1 th:text="${user.getUsername()}"/><br>
+    <p>Role :</p>
+    <h2 th:text="${user.getRoles()}"/><br>
+    <p>Permission :</p>
+    <h3 th:text="${user.getPermissions()}"/>
+
+
+</div>
+<footer th:insert="blocks/footer :: footer"/>
+
+</body>
+</html>

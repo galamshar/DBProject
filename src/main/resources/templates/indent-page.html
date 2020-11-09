@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+>
+
+<head>
+    <meta charset="UTF-8">
+    <title>My Orders</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<!--    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"-->
+<!--          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">-->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.bundle.min.js" integrity="sha384-1CmrxMRARb6aLqgBO7yyAxTOQE2AKb9GfXnEo760AUcUmFx3ibVJJAzGytlQcNXd" crossorigin="anonymous"></script>
+    <link rel="icon" href="https://www.flaticon.com/premium-icon/icons/svg/562/562678.svg">
+
+</head>
+<body>
+<header th:insert="blocks/header :: header"/>
+<h1 th:if="${#lists.size(orders)>0}" class="text-center">Daily Orders</h1>
+<div class="row">
+    <div class="text-center" th:if="${#lists.size(orders)==0}"><h1 class="text-center bg-warning rounded p-2">No orders
+        yet</h1></div>
+    <div th:each="order:${orders}" th:id="${order.getID()}"  class="col-6 border border-secondary p-3 shadow rounded ">
+        <div class="row">
+            <div th:each="food:${order.getOrderProducts()}" class="col-lg-2 text-center col-sm-3 col-xs-4">
+                <img style="height: 150px;width: 130px" th:src="${food.getProduct().getImage_url()}"
+                     th:alt="${food.getProduct().getCategory()}">
+                <p th:text="${food.getProduct().getName()}"/>
+                <b><p th:text="${food.getQuantity()}+' dana'"/></b>
+            </div>
+        </div>
+
+
+        <div class="row">
+
+
+<!--            <div th:if="${order.getStatus()!='PAID'}" class="col-4  mt-auto text-right">-->
+<!--                <form class="m-1 " th:action="'/api/orders/remove/'+${order.getID()}" method="post" name="remove">-->
+<!--                    <input type="submit" value="Remove" class="btn btn-danger">-->
+<!--                </form>-->
+
+<!--                <button th:if="${order.getStatus()!='WITHCASH'}" th:id="${order.getID()}" class="btn btn-success"-->
+<!--                        onclick="cash(this.id)">-->
+<!--                    Cash-->
+<!--                    <abbr title="At Cashbox">-->
+<!--                        <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-cash-stack" fill="currentColor"-->
+<!--                             xmlns="http://www.w3.org/2000/svg">-->
+<!--                            <path d="M14 3H1a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1h-1z"/>-->
+<!--                            <path fill-rule="evenodd"-->
+<!--                                  d="M15 5H1v8h14V5zM1 4a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1H1z"/>-->
+<!--                            <path d="M13 5a2 2 0 0 0 2 2V5h-2zM3 5a2 2 0 0 1-2 2V5h2zm10 8a2 2 0 0 1 2-2v2h-2zM3 13a2 2 0 0 0-2-2v2h2zm7-4a2 2 0 1 1-4 0 2 2 0 0 1 4 0z"/>-->
+<!--                        </svg>-->
+<!--                    </abbr>-->
+<!--                </button>-->
+
+<!--                <a style="font-size: 16px;" class="text-center btn btn-primary" th:href="'/checkout/'+${order.getID()}">Pay-->
+<!--                    <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-credit-card" fill="currentColor"-->
+<!--                         xmlns="http://www.w3.org/2000/svg">-->
+<!--                        <path fill-rule="evenodd"-->
+<!--                              d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v1h14V4a1 1 0 0 0-1-1H2zm13 4H1v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V7z"/>-->
+<!--                        <path d="M2 10a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-1z"/>-->
+<!--                    </svg>-->
+<!--                </a>-->
+<!--                <button th:if="${order.getStatus()!='WITHWAITER'}" onclick="waiter(this.id)" th:id="${order.getID()}"-->
+<!--                        class="btn btn-light py-2">With-->
+<!--                    Waiter-->
+<!--                </button>-->
+<!--            </div>-->
+
+            <div th:if="${order.getStatus()=='PAID' || order.getStatus()=='WITHCASH' || order.getStatus()=='WITHWAITER'}"
+                 class="col-4  text-right mt-auto ml-auto">
+
+                <button th:id="${order.getID()}" onclick="orderDone(this.id)" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+                   Done
+                </button>
+
+                <!-- Modal -->
+
+
+<!--                <abbr title="Wait the order" class="initialism">-->
+<!--                    <button class="btn btn-warning " type="button" disabled>-->
+<!--                        <span class="spinner-border spinner-border-md text-dark" role="status"-->
+<!--                              aria-hidden="true"></span>-->
+<!--                        &lt;!&ndash;                        <span class="sr-only">Loading...</span>&ndash;&gt;-->
+<!--                    </button>-->
+<!--                </abbr>-->
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Success</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                Beka is Gay
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary">Save changes</button>
+            </div>
+        </div>
+    </div>
+</div>
+<footer th:insert="blocks/footer :: footer"/>
+</body>
+<script>
+    $('#myModal').modal(options)
+
+    function orderDone(idd){
+        $.ajax({
+            type : "POST",
+            url : "http://localhost:8081/indent/general",
+            data : {
+                "order_id" :idd
+            },
+            success: function(data){
+             setDetail("Success","Order with id="+idd+" done")
+                removeView(idd)
+            },
+            error:function (response,status,error){
+                setDetail("Error","Order with id="+idd+"not done, error occured")
+            }
+
+        });
+    }
+    function setDetail(status, message) {
+        $('#exampleModalLabel').text(status);
+        $('.modal-body ').text(message);
+    }
+    function removeView(idd){
+        $('div#'+idd).addClass("d-none");
+    }
+</script>

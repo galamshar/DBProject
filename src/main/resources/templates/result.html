@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns='http://www.w3.org/1999/xhtml'
+      xmlns:th='http://www.thymeleaf.org'
+>
+<head>
+    <title>Checkout</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="icon" href="https://www.flaticon.com/premium-icon/icons/svg/562/562678.svg">
+    <style>
+        body {
+            font-family: 'arial';
+        }
+
+        #checkout-form input,
+        #checkout-form button {
+            display: block;
+            margin: 12px;
+        }
+    </style>
+</head>
+<body>
+<div th:insert="blocks/header :: header"/>
+<div class="row">
+    <div class="col-2"></div>
+    <div class="col-8 text-center"><h3 th:if='${error}' th:text='${error}' style='color: red;'></h3>
+        <div th:unless='${error}'>
+            <h3 style='color: green;'>Success!</h3>
+            <div>Id.: <span th:text='${id}'/></div>
+            <div>Status: <span th:text='${status}'/></div>
+            <div>Charge id.: <span th:text='${chargeId}'/></div>
+            <div>Balance transaction id.: <span th:text='${balance_transaction}'/></div>
+        </div>
+        <a href="/api/orders" class="btn btn-primary">Check the Order</a>
+    </div>
+    <div class="col-2"></div>
+</div>
+
+<div th:insert="blocks/footer :: footer"/>
+
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+>
+
+<head>
+    <meta charset="UTF-8">
+    <title>My Orders</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="icon" href="https://www.flaticon.com/premium-icon/icons/svg/562/562678.svg">
+
+</head>
+<body>
+<header th:insert="blocks/header :: header"/>
+<h1 th:if="${#lists.size(orders)>0}" class="text-center">My Orders</h1>
+<div class="container">
+    <div class="text-center" th:if="${#lists.size(orders)==0}"><h1 class="text-center bg-warning rounded p-2">No orders
+        yet</h1></div>
+    <div th:each="order:${orders}" class="border border-secondary m-3 p-3 shadow rounded ">
+        <div class="row">
+            <div th:each="food:${order.getOrderProducts()}" class="col-lg-2 text-center col-sm-3 col-xs-4">
+                <img style="height: 150px;width: 130px" th:src="${food.getProduct().getImage_url()}"
+                     th:alt="${food.getProduct().getCategory()}">
+                <p th:text="${food.getProduct().getName()}"/>
+                <p th:text="${food.getQuantity()}+' dana'"/>
+                <br>
+                <b>Price :<p th:text="${food.getProduct().getPrice()}"/></b>
+            </div>
+
+            <div class="col-2 shadow ml-auto mt-auto mb-3 text-center mr-3"><h3>Total:</h3>
+                <h4 th:text="${order.getTotalOrderPrice()}"/>
+                <h3 th:text="${order.getStatus()}"/>
+            </div>
+        </div>
+
+
+        <div class="row">
+            <div class="col-4"><p>Date Created</p>
+                <h3 th:text="${order.getDateCreated()}"/></div>
+            <div class="col-4"></div>
+
+            <div th:if="${order.getStatus()!='PAID'}" class="col-4  mt-auto text-right">
+                <form class="m-1 " th:action="'/api/orders/remove/'+${order.getID()}" method="post" name="remove">
+                    <input type="submit" value="Remove" class="btn btn-danger">
+                </form>
+
+                <button th:if="${order.getStatus()!='WITHCASH'}" th:id="${order.getID()}" class="btn btn-success" onclick="cash(this.id)">
+                    Cash
+                    <abbr title="At Cashbox">
+                        <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-cash-stack" fill="currentColor"
+                             xmlns="http://www.w3.org/2000/svg">
+                            <path d="M14 3H1a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1h-1z"/>
+                            <path fill-rule="evenodd"
+                                  d="M15 5H1v8h14V5zM1 4a1 1 0 0 0-1 1v8a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1V5a1 1 0 0 0-1-1H1z"/>
+                            <path d="M13 5a2 2 0 0 0 2 2V5h-2zM3 5a2 2 0 0 1-2 2V5h2zm10 8a2 2 0 0 1 2-2v2h-2zM3 13a2 2 0 0 0-2-2v2h2zm7-4a2 2 0 1 1-4 0 2 2 0 0 1 4 0z"/>
+                        </svg>
+                    </abbr>
+                </button>
+
+                <a style="font-size: 16px;" class="text-center btn btn-primary" th:href="'/checkout/'+${order.getID()}">Pay
+                    <svg width="2em" height="2em" viewBox="0 0 16 16" class="bi bi-credit-card" fill="currentColor"
+                         xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd"
+                              d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H2a2 2 0 0 1-2-2V4zm2-1a1 1 0 0 0-1 1v1h14V4a1 1 0 0 0-1-1H2zm13 4H1v5a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V7z"/>
+                        <path d="M2 10a1 1 0 0 1 1-1h1a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-1z"/>
+                    </svg>
+                </a>
+                <button th:if="${order.getStatus()!='WITHWAITER'}" onclick="waiter(this.id)" th:id="${order.getID()}" class="btn btn-light py-2">With
+                    Waiter
+                </button>
+            </div>
+
+            <div th:if="${order.getStatus()=='PAID' || order.getStatus()=='WITHCASH' || order.getStatus()=='WITHWAITER'}" class="col-4  text-right mt-auto ml-auto">
+                <abbr title="Wait the order" class="initialism">
+                    <button class="btn btn-warning " type="button" disabled>
+                        <span class="spinner-border spinner-border-md text-dark" role="status"
+                              aria-hidden="true"></span>
+                        <!--                        <span class="sr-only">Loading...</span>-->
+                    </button>
+                </abbr>
+            </div>
+
+        </div>
+    </div>
+</div>
+<div class="container" id="layer" style="
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);">
+    <div class="row">
+        <div class="col-4 col-sm-3"></div>
+        <div id="ajaxreader" class="col-4 col-sm-6 text-center d-none" role="alert" style="opacity: 1;">
+            <p id="message"></p>
+            <button onclick="action2()" type="button" class="close" data-dismiss="alert"
+                    aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="col-4 col-sm-3"></div>
+
+    </div>
+</div>
+<footer th:insert="blocks/footer :: footer"/>
+<script>
+    function typeBuilder(idd, type) {
+        return '{"orderDto":{"id":' + idd + '},"type":"' + type + '"}';
+    }
+
+    function cash(idd) {
+        let orderTypeDto = typeBuilder(idd, "WITHCASH");
+        ajax(orderTypeDto)
+    }
+
+    function waiter(idd) {
+        let orderTypeDto = typeBuilder(idd, "WITHWAITER");
+        ajax(orderTypeDto)
+
+    }
+
+    function ajax(content) {
+        $.ajax({
+            type: "POST",
+            contentType: "application/json",
+            url: "/paytype",
+            data: content,
+            dataType: 'json',
+            cache: false,
+            timeout: 600000,
+            success: function (data) {
+                var json = "<h4>Payment</h4><button class='btn btn-primary'>" +"<a href='/api/orders' style='color: white;'>"+response.responseText+"</a></button>";
+                $('#message').html(json);
+                styles("success");
+            },
+            error: function (response, error, errorThrown) {
+                var json = "<h4>Payment</h4><button class='btn btn-primary'>" +"<a href='/api/orders' style='color: white;'>"+response.responseText+"</a></button>";
+                $('#message').html(json);
+                styles("danger");
+            }
+        });
+    }
+</script>
+</body>
+</html>

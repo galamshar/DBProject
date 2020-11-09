@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <title>Order</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="icon" href="https://www.flaticon.com/premium-icon/icons/svg/562/562678.svg">
+
+
+</head>
+<body>
+<div th:insert="blocks/header :: header"/>
+<div class="container text-center"  style="width: 80%;">
+        <div class="card mb-4">
+            <img class="card-img-top rounded mx-auto d-block" th:src="${food.getImage_url()}" th:alt="${food.getImage_url()}" style="width:350px;">
+            <div class="card-body">
+                <h2 class="card-title" th:text="${food.getName()}"/>
+                <p class="card-text" th:text="${food.getDescription()}"/>
+            <div class="card-footer text-muted">
+                <p th:text="${date}"/>
+                <a th:href="'/order/'+${food.getID()}">Start Order</a>
+            </div>
+        </div>
+    </div>
+<footer th:insert="blocks/footer :: footer"/>
+
+
+</body>
+</html>

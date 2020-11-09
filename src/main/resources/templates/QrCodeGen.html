@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ru"  xmlns:th="http://www.thymeleaf.org">
+
+
+<head>
+    <!-- Include Bootstrap for styling -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+           integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <link rel="icon" href="https://www.flaticon.com/premium-icon/icons/svg/562/562678.svg">
+
+    <style>
+        .qr-code {
+            width: 300px;
+            margin: 10px;
+        }
+    </style>
+
+    <title>QR Code Generator</title>
+</head>
+
+<body>
+<header th:insert="blocks/header :: header" />
+
+<div class="container-fluid text-center ">
+    <div class="text-center ">
+
+        <!-- Get a Placeholder image initially,
+         this will change according to the
+         data entered later -->
+        <img src=""
+             class="qr-code shadow p-2 rounded border border-primary" />
+    </div>
+
+    <div class="form-horizontal d-none" >
+        <div class="form-group">
+            <label class="control-label col-sm-2"
+                   for="content">
+                Content:
+            </label>
+            <div class="col-sm-10">
+
+                <!-- Input box to enter the
+                    required data -->
+                <input type="text" size="60"
+                       maxlength="60" class="form-control text-center ml-5"
+                       id="content" placeholder="Enter content" th:value="${food}"/>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10 text-center">
+
+                <!-- Button to generate QR Code for
+                 the entered data -->
+                <button type="button" class=
+                        "btn btn-success" id="generate">
+                    Generate
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center" th:fragment="blog">
+    <h1 class="display-4">QR Code</h1>
+    <p class="lead">Scan it to Order</p>
+</div>
+<footer th:insert="blocks/footer :: footer" />
+
+<script src=
+                "https://code.jquery.com/jquery-3.5.1.js">
+</script>
+
+<script>
+
+    function htmlEncode(value) {
+        return $('<div/>').text(value)
+            .html();
+    }
+
+  $(document).ready($(function () {
+      let finalURL =
+          'https://chart.googleapis.com/chart?cht=qr&chl=' +
+          htmlEncode($('#content').val()) +
+          '&chs=300x300&chld=L|0'
+      $('.qr-code').attr('src', finalURL);
+  }));
+
+
+</script>
+
+</body>
+
+</html>

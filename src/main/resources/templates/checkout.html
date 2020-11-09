@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html xmlns='http://www.w3.org/1999/xhtml'
+      xmlns:th='http://www.thymeleaf.org'
+>
+<head>
+    <title>Checkout</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="icon" href="https://www.flaticon.com/premium-icon/icons/svg/562/562678.svg">
+    <style>
+        body {
+            font-family: 'arial';
+        }
+
+        #checkout-form input,
+        #checkout-form button {
+            display: block;
+            margin: 12px;
+        }
+
+        button.stripe-button-el {
+            visibility: hidden !important;
+            display: none !important;
+        }
+
+        section.pricing {
+            background-image: url("https://www.kindpng.com/picc/m/146-1468741_fast-food-pizza-background-hd-png-download.png");
+            background-repeat: no-repeat;
+            background-position: center center;
+            background-size: cover;
+
+        }
+
+
+        .pricing .card {
+            border: none;
+            border-radius: 7px;
+            transition: all 0.2s;
+            box-shadow: 0 0.5rem 1rem 0 rgba(0, 0, 0, 0.1);
+        }
+
+        .pricing hr {
+            margin: 1.5rem 0;
+        }
+
+        .pricing .card-title {
+            margin: 0.5rem 0;
+            font-size: 0.9rem;
+            letter-spacing: .1rem;
+            font-weight: bold;
+        }
+
+        .pricing .card-price {
+            font-size: 3rem;
+            margin: 0;
+        }
+
+        .pricing .card-price .period {
+            font-size: 0.8rem;
+        }
+
+        .pricing ul li {
+            margin-bottom: 1rem;
+        }
+
+        .pricing .text-muted {
+            opacity: 0.7;
+        }
+
+        .pricing .btn {
+            font-size: 80%;
+            border-radius: 7px;
+            letter-spacing: .1rem;
+            font-weight: bold;
+            padding: 1rem;
+            opacity: 0.7;
+            transition: all 0.2s;
+        }
+
+        /* Hover Effects on Card */
+
+        @media (min-width: 992px) {
+            .pricing .card:hover {
+                margin-top: -.25rem;
+                margin-bottom: .25rem;
+                box-shadow: 0 0.5rem 1rem 0 rgba(0, 0, 0, 0.3);
+            }
+
+            .pricing .card:hover .btn {
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+<div th:insert="blocks/header :: header"/>
+
+
+<section class="pricing py-5">
+    <div class="container">
+        <div class="row">
+            <!-- Free Tier -->
+            <div class="col-lg-4">
+                <div class="card mb-5 mb-lg-0">
+                    <div class="card-body">
+
+<!--                        <h5 class="card-title text-muted text-uppercase text-center">Free</h5>-->
+<!--                        <h6 class="card-price text-center">$0<span class="period">/month</span></h6>-->
+<!--                        <hr>-->
+<!--                        <ul class="fa-ul">-->
+<!--                            <li><span class="fa-li"><i class="fas fa-check"></i></span>Single User</li>-->
+<!--                            <li><span class="fa-li"><i class="fas fa-check"></i></span>5GB Storage</li>-->
+<!--                            <li><span class="fa-li"><i class="fas fa-check"></i></span>Unlimited Public Projects</li>-->
+<!--                            <li><span class="fa-li"><i class="fas fa-check"></i></span>Community Access</li>-->
+<!--                            <li class="text-muted"><span class="fa-li"><i class="fas fa-times"></i></span>Unlimited-->
+<!--                                Private Projects-->
+<!--                            </li>-->
+<!--                            <li class="text-muted"><span class="fa-li"><i class="fas fa-times"></i></span>Dedicated-->
+<!--                                Phone Support-->
+<!--                            </li>-->
+<!--                            <li class="text-muted"><span class="fa-li"><i class="fas fa-times"></i></span>Free Subdomain-->
+<!--                            </li>-->
+<!--                            <li class="text-muted"><span class="fa-li"><i class="fas fa-times"></i></span>Monthly Status-->
+<!--                                Reports-->
+<!--                            </li>-->
+<!--                        </ul>-->
+<!--                        <a href="#"-->
+<!--                           class="btn btn-success mx-auto text-uppercase">Button</a>-->
+                    </div>
+                </div>
+            </div>
+            <!-- Plus Tier -->
+            <div class="col-lg-4">
+                <div class="card mb-5 mb-lg-0">
+                    <div class="card-body">
+                        <form class="form-signin" th:action="'/charge/'+${orderid}" method='POST' id='checkout-form'>
+                            <div class="form-label-group text-center">
+                                <input type='hidden' th:value='${amount*100}' name='amount'/>
+                                <label>Price:<h2 th:text="${amount}+' KZT'"/></label>
+                            </div>
+                            <!-- NOTE: data-key/data-amount/data-currency will be rendered by Thymeleaf -->
+                            <script
+                                    src='https://checkout.stripe.com/checkout.js'
+                                    class='stripe-button'
+                                    th:attr='data-key=${stripePublicKey},
+                         data-amount=${amount*100},
+                         data-currency=${currency}'
+                                    data-name='Aitu Canteen'
+                                    data-description='The Order Payment Checkout'
+                                    data-image='https://static10.tgstat.ru/channels/_0/fd/fdef6ef75b09e5ef4e7d067a53bea19a.jpg'
+                                    data-locale='auto'
+                                    data-zip-code='false'>
+
+                            </script>
+                            <div class="row text-center">
+                                <div class="col-4"></div>
+                                <div class="col-4 text-center">
+                                    <button type="submit"
+                                            class="btn btn-success  mx-auto">Pay
+                                    </button>
+                                </div>
+                                <div class="col-4"></div>
+                            </div>
+                        </form>
+                        <ul class="fa-ul">
+                            <li><span class="fa-li"><i class="fas fa-check"></i></span>Cashback would be 1% from every
+                                purchase
+                            </li>
+                            <li><span class="fa-li"><i class="fas fa-check"></i></span>If the total price more than
+                                3000KZT
+                            </li>
+                            <li><span class="fa-li"><i class="fas fa-check"></i></span>Cashback would be more than 10%
+                            </li>
+
+
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- Pro Tier -->
+            <div class="col-lg-4">
+<!--                <div class="card">-->
+<!--                    <div class="card-body">-->
+<!--                        <h5 class="card-title text-muted text-uppercase text-center">Pro</h5>-->
+<!--                        <h6 class="card-price text-center">$49<span class="period">/month</span></h6>-->
+<!--                        <hr>-->
+<!--                        <ul class="fa-ul">-->
+<!--                            <li><span class="fa-li"><i class="fas fa-check"></i></span><strong>Unlimited Users</strong>-->
+<!--                            </li>-->
+<!--                            <li><span class="fa-li"><i class="fas fa-check"></i></span>150GB Storage</li>-->
+<!--                            <li><span class="fa-li"><i class="fas fa-check"></i></span>Unlimited Public Projects</li>-->
+<!--                            <li><span class="fa-li"><i class="fas fa-check"></i></span>Community Access</li>-->
+<!--                            <li><span class="fa-li"><i class="fas fa-check"></i></span>Unlimited Private Projects</li>-->
+<!--                            <li><span class="fa-li"><i class="fas fa-check"></i></span>Dedicated Phone Support</li>-->
+<!--                            <li><span class="fa-li"><i class="fas fa-check"></i></span><strong>Unlimited</strong> Free-->
+<!--                                Subdomains-->
+<!--                            </li>-->
+<!--                            <li><span class="fa-li"><i class="fas fa-check"></i></span>Monthly Status Reports</li>-->
+<!--                        </ul>-->
+<!--                        <a href="#" class="btn btn-success mx-auto text-uppercase">Button</a>-->
+<!--                    </div>-->
+<!--                </div>-->
+            </div>
+        </div>
+    </div>
+</section>
+<div th:insert="blocks/footer :: footer"/>
+
+
+</body>
+</html>
